@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# Solution to Facebook engineering puzzle <%= keyword %>
+# <%= puzzle_url %>
+# Copyright (C) <%= year %> Jason Whittle <jason.whittle@gmail.com>
+# Licensed under the terms of the GNU GPLv3
+
+ruby $(dirname $_)/lib/<%= keyword %>.rb

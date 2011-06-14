@@ -5,4 +5,6 @@
 # Copyright (C) <%= year %> Jason Whittle <jason.whittle@gmail.com>
 # Licensed under the terms of the GNU GPLv3
 
-ruby $(dirname $_)/lib/<%= keyword %>.rb
+keyword=<%= keyword %>.rb
+abspath=$(cd ${0%/*} && echo $PWD/${0##*/})
+ruby $(dirname $abspath)/lib/$keyword.rb

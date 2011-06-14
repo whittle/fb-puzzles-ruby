@@ -1,0 +1,9 @@
+Solution to Facebook engineering puzzle <%= keyword %>:
+<%= puzzle_url %>
+
+Copyright (C) <%= year %> Jason Whittle <jason.whittle@gmail.com>
+
+Licensed under the terms of the GNU GPLv3
+
+This solution is part of a repository which can be found at
+https://github.com/whittle/fb-puzzles-ruby

@@ -1,10 +1,10 @@
 #!/bin/sh
 
 # Solution to Facebook engineering puzzle <%= keyword %>
-# <%= puzzles_url %>
+# <%= puzzle_url %>
 # Copyright (C) <%= year %> Jason Whittle <jason.whittle@gmail.com>
 # Licensed under the terms of the GNU GPLv3
 
 keyword=<%= keyword %>
 abspath=$(cd ${0%/*} && echo $PWD/${0##*/})
-ruby $(dirname $abspath)/lib/$keyword.rb
+ruby $(dirname $abspath)/lib/$keyword.rb "$@"

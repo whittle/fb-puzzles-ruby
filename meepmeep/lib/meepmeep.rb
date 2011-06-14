@@ -3,4 +3,12 @@
 # Copyright (C) 2011 Jason Whittle <jason.whittle@gmail.com>
 # Licensed under the terms of the GNU GPLv3
 
-puts 'Meep meep!'
+def main(args)
+  puts message
+end
+
+def message
+  'meepmeep'
+end
+
+main ARGV  if $0 == __FILE__

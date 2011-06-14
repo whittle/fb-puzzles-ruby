@@ -1,6 +1,14 @@
 # Solution to Facebook engineering puzzle <%= keyword %>
-# <%= puzzles_url %>
+# <%= puzzle_url %>
 # Copyright (C) <%= year %> Jason Whittle <jason.whittle@gmail.com>
 # Licensed under the terms of the GNU GPLv3
 
-puts '<%= keyword %>'
+def main(args)
+  puts message
+end
+
+def message
+  '<%= keyword %>'
+end
+
+main ARGV  if $0 == __FILE__

@@ -6,11 +6,11 @@ class Puzzle < Thor
   PuzzlesURL = 'http://www.facebook.com/careers/puzzles.php'
 
   attr_accessor :keyword
-  attr_accessor :puzzles_url
+  attr_accessor :puzzle_url
 
   desc 'skeleton KEYWORD', 'generates a new solution skeleton'
-  def skeleton keyword, puzzles_url = PuzzlesURL
-    self.keyword, self.puzzles_url = keyword, puzzles_url
+  def skeleton keyword, puzzle_url = PuzzlesURL
+    self.keyword, self.puzzle_url = keyword, puzzle_url
     directory TemplateDir, keyword
     chmod keyword, 0755
   end

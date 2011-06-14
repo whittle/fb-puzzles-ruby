@@ -7,4 +7,4 @@
 
 keyword=meepmeep
 abspath=$(cd ${0%/*} && echo $PWD/${0##*/})
-ruby $(dirname $abspath)/lib/$keyword.rb
+ruby $(dirname $abspath)/lib/$keyword.rb "$@"

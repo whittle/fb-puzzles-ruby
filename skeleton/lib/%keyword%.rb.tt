@@ -1,5 +1,5 @@
 # Solution to Facebook engineering puzzle <%= keyword %>
-# <%= puzzle_url %>
+# <%= puzzles_url %>
 # Copyright (C) <%= year %> Jason Whittle <jason.whittle@gmail.com>
 # Licensed under the terms of the GNU GPLv3
 

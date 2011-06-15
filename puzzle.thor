@@ -15,11 +15,6 @@ class Puzzle < Thor
     chmod keyword, 0755
   end
 
-  desc 'prep KEYWORD', 'package the solution for sending'
-  def prep keyword
-    tar_into keyword, 'LICENSE', 'lib', keyword
-  end
-
   desc 'test KEYWORD', 'test the solution from its tarball'
   def test keyword, test_dir = TestDir, test_file = 'in.txt'
     tar 'LICENSE', 'lib', keyword, :from => keyword, :into => keyword do |tarball|

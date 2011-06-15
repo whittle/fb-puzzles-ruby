@@ -1,3 +1,4 @@
 source 'http://rubygems.org'
-gem 'differ'
+
 gem 'thor'
+gem 'diff-lcs'

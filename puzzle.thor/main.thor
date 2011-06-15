@@ -1,6 +1,5 @@
 require 'rubygems'
 require 'bundler'
-require 'differ'
 
 class Puzzle < Thor
   include Actions
@@ -34,9 +33,12 @@ class Puzzle < Thor
 
   desc 'test KEYWORD', 'test the solution against an output fixture'
   def test keyword, in_file = InFixture, out_file = OutFixture
-    File.read(out_file).tap do |expected|
-      command("./#{keyword}", in_file, :capture => true).tap do |actual|
-        expected == actual ? say_status(:result, 'correct!') : diff(expected, actual)
+    command("./#{keyword}", in_file, :capture => true).tap do |actual|
+      if actual == File.read(out_file)
+        say_status :test, 'passed'
+      else
+        say_status :test, 'failed', :red
+        shell.send :show_diff, out_file, actual
       end
     end
   end
@@ -49,12 +51,6 @@ class Puzzle < Thor
   no_tasks do
     def year
       Date.today.year
-    end
-
-    def diff expected, actual
-      Differ.diff(expected, actual).format_as(:color).each_line do |diff_line|
-        say_status :diff, diff_line.chomp
-      end
     end
 
     def tar *file_list, &block

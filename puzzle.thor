@@ -1,9 +1,16 @@
+require 'rubygems'
+require 'bundler'
+require 'differ'
+
 class Puzzle < Thor
   include Actions
   source_root File.dirname(__FILE__)
+
   TemplateDir = 'skeleton'
   TestDir = 'staging'
   PuzzlesURL = 'http://www.facebook.com/careers/puzzles.php'
+  InFixture = 'spec/fixtures/in.txt'
+  OutFixture = 'spec/fixtures/out.txt'
 
   attr_accessor :keyword
   attr_accessor :puzzle_url
@@ -15,15 +22,21 @@ class Puzzle < Thor
     chmod keyword, 0755
   end
 
-  desc 'test KEYWORD', 'test the solution from its tarball'
-  def test keyword, test_dir = TestDir, test_file = 'in.txt'
-    tar 'LICENSE', 'lib', keyword, :from => keyword, :into => keyword do |tarball|
+  desc 'prep KEYWORD', 'prep the solution for submission'
+  def prep keyword, test_dir = TestDir
+    tar :lib, :spec, :LICENSE, keyword, :from => keyword, :into => keyword do |tarball|
       invoke :clobber_test, [test_dir]
       untar tarball, :into => test_dir do
-        invoke :testfile, test_file
-        run("./#{keyword} #{test_file}", :capture => true).tap do |result|
-          say_status :result, result
-        end
+        invoke :test, keyword
+      end
+    end
+  end
+
+  desc 'test KEYWORD', 'test the solution against an output fixture'
+  def test keyword, in_file = InFixture, out_file = OutFixture
+    File.read(out_file).tap do |expected|
+      command("./#{keyword}", in_file, :capture => true).tap do |actual|
+        expected == actual ? say_status(:result, 'correct!') : diff(expected, actual)
       end
     end
   end
@@ -33,14 +46,15 @@ class Puzzle < Thor
     remove_dir test_dir
   end
 
-  desc 'dir file', 'create a file for testing'
-  def testfile file_name
-    touch file_name
-  end
-
   no_tasks do
     def year
       Date.today.year
+    end
+
+    def diff expected, actual
+      Differ.diff(expected, actual).format_as(:color).each_line do |diff_line|
+        say_status :diff, diff_line.chomp
+      end
     end
 
     def tar *file_list, &block
@@ -60,12 +74,11 @@ class Puzzle < Thor
       end
     end
 
-    def touch file_name
-      command :touch, file_name
-    end
-
     def command *args
-      run args.map(&:to_s).join(' ')
+      opts = args.pop  if args.last.is_a? Hash
+      args = [args.map(&:to_s).join(' ')]
+      args.push opts  if opts
+      run *args
     end
   end
 end

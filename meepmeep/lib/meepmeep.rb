@@ -8,7 +8,7 @@ def main(args)
 end
 
 def message
-  'meepmeep'
+  'Meep meep!'
 end
 
 main ARGV  if $0 == __FILE__

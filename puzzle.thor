@@ -22,13 +22,13 @@ class Puzzle < Thor
 
   desc 'test KEYWORD', 'test the solution from its tarball'
   def test keyword, test_dir = TestDir, test_file = 'in.txt'
-    invoke :prep, [keyword]
-    invoke :clobber_test, [test_dir]
-    untar_into test_dir, keyword
-    invoke :testfile, [test_dir, test_file]
-    inside test_dir do
-      run("./#{keyword} #{test_file}", :capture => true).tap do |result|
-        say_status :result, result
+    tar 'LICENSE', 'lib', keyword, :from => keyword, :into => keyword do |tarball|
+      invoke :clobber_test, [test_dir]
+      untar tarball, :into => test_dir do
+        invoke :testfile, test_file
+        run("./#{keyword} #{test_file}", :capture => true).tap do |result|
+          say_status :result, result
+        end
       end
     end
   end
@@ -39,8 +39,8 @@ class Puzzle < Thor
   end
 
   desc 'dir file', 'create a file for testing'
-  def testfile test_dir, file_name
-    inside(test_dir) { touch file_name }
+  def testfile file_name
+    touch file_name
   end
 
   no_tasks do
@@ -48,17 +48,21 @@ class Puzzle < Thor
       Date.today.year
     end
 
-    def tar_into name, *file_list
-      command :tar, '-czC', name, '-f', tarball(name), *file_list
+    def tar *file_list, &block
+      options = file_list.pop
+      "#{options[:into]}.tgz".tap do |tarball|
+        command :tar, '-czC', options[:from], '-f', tarball, *file_list
+        block[tarball]
+        remove_file tarball
+      end
     end
 
-    def untar_into test_dir, name
-      empty_directory test_dir
-      command :tar, '-xzC', test_dir, '-f', tarball(name)
-    end
-
-    def tarball name = keyword
-      "#{name}.tgz"
+    def untar tarball, options, &block
+      options[:into].tap do |dir|
+        empty_directory dir
+        command :tar, '-xzC', dir, '-f', tarball
+        inside dir, &block
+      end
     end
 
     def touch file_name
